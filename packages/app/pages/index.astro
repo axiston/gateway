@@ -1,0 +1,22 @@
+---
+import Main from "@/layouts/Main.astro";
+import type { Project } from "@/components/project/Card.astro";
+import Card from "@/components/project/Card.astro";
+
+const projects: Project[] = [
+	{
+		name: "Hello",
+		description: "Hello there!",
+	},
+	{
+		name: "Hello2",
+		description: "Hello there!",
+	},
+];
+---
+<Main>
+    {projects.map((project) => {
+       return <Card project={project}/>
+    })}
+    Content
+</Main>

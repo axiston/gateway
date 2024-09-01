@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"lib": ["ES2022", "DOM"],
+
+		"module": "ESNext",
+		"moduleDetection": "force",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"types": ["node"],
+
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"declaration": true,
+		"declarationDir": "dist",
+		"outDir": "./dist",
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
+
+		"strict": true,
+		"noUnusedLocals": true,
+		"allowImportingTsExtensions": true,
+
+		"paths": {
+			"@/*": ["./*"]
+		}
+	}
+}

@@ -1,0 +1,28 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+resolver = "2"
+members = [
+    "./crates/cli",
+    "./crates/core",
+    "./crates/database",
+    "./crates/graph",
+    "./crates/runtime",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Axiston License 1.0"
+publish = false
+
+authors = ["Axiston <contact@axiston.com>"]
+repository = "https://github.com/axiston/axiston"
+homepage = "https://github.com/axiston/axiston"
+documentation = "https://docs.rs/axiston"
+
+[workspace.dependencies]
+axiston-core = { path = "./crates/core", version = "0.1.0" }
+axiston-database = { path = "./crates/database", version = "0.1.0" }
+axiston-graph = { path = "./crates/graph", version = "0.1.0" }
+axiston-runtime = { path = "./crates/runtime", version = "0.1.0" }
