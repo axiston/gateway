@@ -1,11 +1,10 @@
 use std::future::Future;
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axiston_core::service::AppConnectInfo;
 use axum::Router;
 use tokio::net::TcpListener;
 
-use crate::server::ServerConfig;
+use crate::server::{AppConnectInfo, ServerConfig};
 
 pub async fn run_http_server<F>(
     config: ServerConfig,

@@ -1,29 +1,20 @@
 #[cfg(feature = "support-https")]
 use std::path::PathBuf;
 
+use crate::Args;
+
 /// App [`server`] configuration.
 ///
 /// [`server`]: crate::server
-#[must_use = "configs do nothing unless you use them"]
 #[derive(Debug, Clone)]
+#[must_use = "configs do nothing unless you use them"]
 pub struct ServerConfig {
-    /// Used by the primary server.
     pub port: u16,
-
-    // TODO: Shutdown duration.
-    /// Used by the secondary (`http` to `https` redirection) server.
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub redirect: u16,
-
-    /// `./cert.pem` file location.
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub cert: PathBuf,
-
-    /// `./key.pem` file location.
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub key: PathBuf,
 }
 
@@ -48,22 +39,30 @@ impl Default for ServerConfig {
     }
 }
 
+impl From<Args> for ServerConfig {
+    fn from(args: Args) -> Self {
+        Self {
+            port: args.port,
+            #[cfg(feature = "support-https")]
+            redirect: args.redirect,
+            #[cfg(feature = "support-https")]
+            cert: args.keys.join("./cert.pem"),
+            #[cfg(feature = "support-https")]
+            key: args.keys.join("./key.pem"),
+        }
+    }
+}
+
 /// [`ServerConfig`] builder.
-#[must_use = "configs do nothing unless you use them"]
 #[derive(Debug, Default, Clone)]
+#[must_use = "configs do nothing unless you use them"]
 pub struct ServerBuilder {
     pub port: Option<u16>,
-
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub redirect: Option<u16>,
-
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub cert: Option<PathBuf>,
-
     #[cfg(feature = "support-https")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub key: Option<PathBuf>,
 }
 

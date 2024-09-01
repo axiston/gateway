@@ -1,6 +1,6 @@
-### axiston/cli
+### axiston/data
 
-Cli and Http/https server.
+Persistence layer / data-access module.
 Lorem Ipsum. Lorem Ipsum. Lorem Ipsum.
 
 #### Notes

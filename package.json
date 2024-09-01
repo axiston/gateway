@@ -1,11 +1,10 @@
 {
-  "name": "@axiston/axiston",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
-  "workspaces": [
-    "./packages/app",
-    "./packages/client",
-    "./packages/editor"
-  ]
+	"name": "@axiston/axiston",
+	"version": "0.1.0",
+	"type": "module",
+	"private": true,
+	"workspaces": [
+		"./packages/app",
+		"./packages/lib"
+	]
 }

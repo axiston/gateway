@@ -1,13 +1,12 @@
 use std::future::Future;
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axiston_core::service::AppConnectInfo;
 use axum::Router;
 use axum_server::tls_rustls::RustlsConfig;
 use axum_server::Handle;
 use tokio::task::JoinHandle;
 
-use crate::server::{run_redirect_server, ServerConfig};
+use crate::server::{run_redirect_server, AppConnectInfo, ServerConfig};
 
 pub fn run_redirect_daemon<F>(
     http_port: u16,
