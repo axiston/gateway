@@ -1,0 +1,66 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "axiston-core"
+version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+readme = "./README.md"
+
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+documentation = { workspace = true }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+path = "lib.rs"
+
+[features]
+default = []
+
+# - Enables OAuth2 authorization flows/methods.
+# - Typically used for the in-cloud deployment.
+support-oauth2 = []
+# - Enables invite authorization flows/methods.
+# - Typically used for the on-premise deployment.
+support-invite = []
+
+[dependencies]
+axiston-database = { workspace = true }
+# TODO: axiston-graph = { workspace = true }
+axiston-runtime = { workspace = true }
+
+tokio = { version = "1.40", features = ["macros", "rt-multi-thread", "signal"] }
+futures = { version = "0.3", features = [] }
+
+anyhow = { version = "1.0", features = ["backtrace"] }
+serde = { version = "1.0", features = ["derive"] }
+bytes = { version = "1.7", features = ["serde"] }
+validator = { version = "0.18", features = [] }
+ts-rs = { version = "10.0", features = [] }
+
+tracing = { version = "0.1", features = [] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "time"] }
+tracing-opentelemetry = { version = "0.26.0", features = [] }
+opentelemetry = { version = "0.26.0", features = [] }
+time = { version = "0.3", features = ["serde"] }
+
+axum = { version = "0.7", features = ["http2", "macros", "ws"] }
+axum-server = { version = "0.7", optional = true, features = ["tls-rustls"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+utoipa = { version = "4.2", features = [] }
+utoipauto = { version = "0.1", features = [] }
+
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["full"] }
+
+[dev-dependencies]
+axum-test = { version = "16.2", features = [] }
+
+[build-dependencies]
+anyhow = { version = "1.0", features = ["backtrace"] }
