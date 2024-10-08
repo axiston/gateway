@@ -18,9 +18,7 @@ name = "axiston"
 path = "main.rs"
 
 [features]
-default = ["deploy-on-premise"]
-deploy-on-premise = ["support-https", "support-files", "support-invite"]
-deploy-in-cloud = ["support-oauth2"]
+default = []
 
 # - Enables HTTPS support with the axum-server crate.
 # - Spawns a server that redirects incoming HTTP requests.
@@ -28,42 +26,26 @@ support-https = ["dep:axum-server"]
 # - Builds the whiteboard app into the app directory.
 # - Enables service that serves files from app directory.
 support-files = []
-# - Enables OAuth2 authorization flows/methods.
-# - Typically used for the in-cloud deployment.
-support-oauth2 = []
-# - Enables secret invite authorization flows.
-# - Typically used for the on-premise deployment.
-support-invite = []
 
 [dependencies]
 axiston-core = { workspace = true }
-axiston-data = { workspace = true }
 
 clap = { version = "4.5", features = ["derive"] }
-tokio = { version = "1.39", features = ["macros", "rt-multi-thread", "signal"] }
-futures = { version = "0.3", features = [] }
+tokio = { version = "1.40", features = ["macros", "rt-multi-thread", "signal"] }
 anyhow = { version = "1.0", features = ["backtrace"] }
+serde = { version = "1.0", features = ["derive"] }
 
 tracing = { version = "0.1", features = [] }
 tracing-subscriber = { version = "0.3", features = ["env-filter", "time"] }
 tracing-opentelemetry = { version = "0.25", features = [] }
 opentelemetry = { version = "0.24", features = [] }
 
-serde = { version = "1.0", features = ["derive"] }
-time = { version = "0.3", features = ["serde"] }
-bytes = { version = "1.7", features = ["serde"] }
-
 axum = { version = "0.7", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.7", optional = true, features = ["tls-rustls"] }
 axum-extra = { version = "0.9", features = ["typed-header"] }
-utoipa = { version = "4.2", features = [] }
-utoipauto = { version = "0.1", features = [] }
 
 tower = { version = "0.4", features = ["full"] }
 tower-http = { version = "0.5", features = ["full"] }
 
-[build-dependencies]
-anyhow = { version = "1.0", features = ["backtrace"] }
-
 [dev-dependencies]
-axum-test = { version = "15.0", features = [] }
+axum-test = { version = "15.7", features = [] }

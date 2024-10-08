@@ -8,3 +8,11 @@ updates:
       timezone: "Europe/Warsaw"
       day: "friday"
       time: "18:00"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/Warsaw"
+      day: "friday"
+      time: "18:00"

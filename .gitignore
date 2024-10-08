@@ -22,8 +22,13 @@ package-lock.json
 env.d.ts
 *-env.d.ts
 
+# Lang: Astro
+.vite/
+.astro/
+
 # Output
 dist/
+typing/
 output/
 build/
 

@@ -5,7 +5,9 @@ resolver = "2"
 members = [
     "./crates/cli",
     "./crates/core",
-    "./crates/data",
+    "./crates/database",
+    "./crates/graph",
+    "./crates/runtime",
 ]
 
 [workspace.package]
@@ -21,4 +23,6 @@ documentation = "https://docs.rs/axiston"
 
 [workspace.dependencies]
 axiston-core = { path = "./crates/core", version = "0.1.0" }
-axiston-data = { path = "./crates/data", version = "0.1.0" }
+axiston-database = { path = "./crates/database", version = "0.1.0" }
+axiston-graph = { path = "./crates/graph", version = "0.1.0" }
+axiston-runtime = { path = "./crates/runtime", version = "0.1.0" }
