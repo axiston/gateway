@@ -2,32 +2,49 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("./README.md")]
 
-//! TODO.
+//! ### Examples
+//!
+//! ```rust,no_run
+//! use axiston_database::{Result, AppDatabase};
+//!
+//! #[tokio::main]
+//! async fn main() -> Result<()> {
+//!     let addr = "postgresql://usr:pwd@localhost:5432/db";
+//!     let conn = AppDatabase::connect_single_instance(addr).await;
+//!     Ok(())
+//! }
+//! ```
 
-pub mod database;
-pub mod datatype;
-pub mod entity;
+mod connect;
+mod migrate;
 
-// TODO: accounts
-// TODO: projects
-// TODO: accounts
+use derive_more::From;
+use sea_orm::DbErr as SeaError;
+
+pub use crate::connect::{AppDatabase, ConnectOptionsExt, ConstraintViolation};
+pub use crate::migrate::AppDatabaseExt;
 
 /// Unrecoverable failure of the [`Database`].
 ///
 /// Includes all error types that may occur.
 ///
 /// [`Database`]: database::Database
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, From, thiserror::Error)]
+#[error("underlying sql driver failure: {inner}")]
 #[must_use = "errors do nothing unless you use them"]
-pub enum Error {
-    /// Underlying [`sqlx`] driver failure.
-    #[error("underlying sql driver failure: {0}")]
-    Sql(#[from] sqlx::Error),
+pub struct Error {
+    inner: SeaError,
+}
+
+impl Error {
+    /// Returns a new [`Error`].
+    #[inline]
+    pub fn new(inner: SeaError) -> Self {
+        Self { inner }
+    }
 }
 
 /// Specialized [`Result`] alias for the [`Error`] type.
 ///
 /// [`Result`]: std::result::Result
 pub type Result<T, E = Error> = std::result::Result<T, E>;
-
-// TODO: Database as a trait?

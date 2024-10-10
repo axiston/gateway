@@ -24,16 +24,18 @@ path = "lib.rs"
 default = []
 
 [dependencies]
-axiston-database = { workspace = true }
-axiston-runtime = { workspace = true }
-
 serde = { version = "1.0", features = ["derive"] }
-derive_more = { version = "1.0", features = ["full"] }
+serde_with = { version = "3.11", features = [] }
 thiserror = { version = "1.0", features = [] }
+derive_more = { version = "1.0", features = ["full"] }
+ts-rs = { version = "10.0", features = ["uuid-impl"] }
 
 petgraph = { version = "0.6", features = [] }
-croner = { version = "2.0", features = [] }
-uuid = { version = "1.10", features = ["serde", "v4"] }
+uuid = { version = "1.11", features = ["serde", "v4"] }
+cron = { version = "0.12", features = [] }
+tracing = { version = "0.1", features = [] }
+time = { version = "0.3", features = [] }
 
 [dev-dependencies]
+tokio = { version = "1.41", features = ["rt-multi-thread", "macros"] }
 serde_json = { version = "1.0", features = [] }

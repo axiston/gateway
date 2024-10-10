@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 
 // Official integrations.
+import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import node from "@astrojs/node";
@@ -20,14 +21,17 @@ import icon from "astro-icon";
 export default defineConfig({
 	site: "https://axiston.com",
 	srcDir: ".",
+	redirects: {
+		"/": "/projects",
+	},
 	integrations: [
+		svelte(),
 		tailwind(),
 		mdx(),
 		icon({
 			iconDir: "./assets",
 		}),
 	],
-
 	output: "server",
 	adapter: node({
 		mode: "standalone",

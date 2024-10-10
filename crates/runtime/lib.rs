@@ -5,24 +5,24 @@
 //! ### Examples
 //!
 //! ```rust
-//! use axiston_runtime::{Client, Result};
+//! use axiston_runtime::{RuntimeClient, Result};
 //!
 //! fn main() -> Result<()> {
-//!     let client = Client::builder().build();
+//!     let client = RuntimeClient::builder().build();
 //!     Ok(())
 //! }
 //! ```
 
-pub use crate::client::{Client, ClientBuilder};
+pub use crate::client::{ClientBuilder, RuntimeClient};
 
 mod client;
 mod runtime;
 
-/// Unrecoverable failure of the [`Client`].
+/// Unrecoverable failure of the [`RuntimeClient`].
 ///
 /// Includes all error types that may occur.
-#[derive(Debug, thiserror::Error)]
 #[must_use = "errors do nothing unless you use them"]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {}
 
 /// Specialized [`Result`] alias for the [`Error`] type.

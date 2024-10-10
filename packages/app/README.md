@@ -8,24 +8,9 @@ Lorem Ipsum. Lorem Ipsum. Lorem Ipsum.
 - Lorem Ipsum.
 - Lorem Ipsum.
 
-### Pages
+### Assets
 
-- `./:account`
-- `./:account/integrations`
-- `./:account/settings`
-
----
-
-- `./:account/:project`
-- `./:account/:project/members`
-- `./:account/:project/integrations`
-- `./:account/:project/analytics`
-- `./:account/:project/settings`
-
----
-
-- `./:account/:project/:workflow`
-- `./:account/:project/:workflow/editor`
-- `./:account/:project/:workflow/revisions`
-- `./:account/:project/:workflow/executions`
-- `./:account/:project/:workflow/webhooks`
+- https://github.com/tailwindlabs/heroicons
+- 24/outline
+- MIT license
+- Commit 56c073c2c9a66d2e51adb93d8e87e2e941d5b6db

@@ -1,22 +1,23 @@
 //! TODO.
 //!
 
-mod builder;
+mod client_builder;
+mod task_registry;
 
 use deadpool::managed::Pool;
 
-pub use crate::client::builder::ClientBuilder;
+pub use crate::client::client_builder::ClientBuilder;
 use crate::runtime::RuntimeManager;
 use crate::Result;
 
 /// TODO.
 #[derive(Debug, Clone)]
-pub struct Client {
+pub struct RuntimeClient {
     inner: Pool<RuntimeManager>,
 }
 
-impl Client {
-    /// Returns a new [`Client`].
+impl RuntimeClient {
+    /// Returns a new [`RuntimeClient`].
     #[inline]
     fn new(inner: Pool<RuntimeManager>) -> Self {
         Self { inner }
@@ -37,11 +38,11 @@ impl Client {
 
 #[cfg(test)]
 mod test {
-    use crate::{Client, Result};
+    use crate::{Result, RuntimeClient};
 
     #[test]
     fn build_from_default() -> Result<()> {
-        let _ = Client::builder().build();
+        let _ = RuntimeClient::builder().build();
         Ok(())
     }
 }

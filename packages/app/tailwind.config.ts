@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import theme from "tailwindcss/defaultTheme";
 // import plugin from 'tailwindcss/plugin'
 
 export default {
@@ -9,4 +10,12 @@ export default {
 		"./pages/**/*.{html,md,mdx,astro,svelte}",
 	],
 	darkMode: "class",
+	theme: {
+		extend: {
+			fontFamily: {
+				sans: ["Barlow", ...theme.fontFamily.sans],
+				mono: ["Jetbrains", ...theme.fontFamily.mono],
+			},
+		},
+	},
 } satisfies Config;

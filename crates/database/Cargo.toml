@@ -21,13 +21,26 @@ rustdoc-args = ["--cfg", "docsrs"]
 path = "lib.rs"
 
 [dependencies]
-tokio = { version = "1.40", features = [] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "tls-native-tls", "postgres", "time"] }
-# serde = { version = "1.0", features = ["derive"] }
+sea-orm = { workspace = true }
+sea-orm-migration = { workspace = true }
 
-time = { version = "0.3", features = [] }
-thiserror = { version = "1.0", features = [] }
-tracing = { version = "0.1", features = [] }
+futures = { workspace = true }
+tracing = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+derive_more = { workspace = true }
+
+serde = { workspace = true }
+serde_with = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+time = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
-anyhow = { version = "1.0", features = ["backtrace"] }
+sea-orm-cli = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }

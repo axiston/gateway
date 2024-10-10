@@ -1,7 +1,7 @@
 use std::future::Future;
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axiston_core::handler::{ErrorKind, Result};
+use axiston_server::handler::{ErrorKind, Result};
 use axum::extract::{Host, State};
 use axum::handler::Handler;
 use axum::http::Uri;
@@ -15,7 +15,9 @@ use tokio::task::JoinHandle;
 #[derive(Debug, Clone, Copy)]
 #[must_use = "state does nothing unless you use it"]
 struct RedirectState {
+    /// The server is listening on this port.
     pub http: u16,
+    /// The server is redirecting to this port.
     pub https: u16,
 }
 

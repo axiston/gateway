@@ -1,0 +1,22 @@
+---
+import Button from "./Button.astro";
+
+export interface Props {
+    openMenu?: string;
+}
+
+const {} = Astro.props;
+---
+<nav class="flex flex-col justify-between bg-gray-100">
+    <header class="flex flex-col">
+        <Button icon="axiston/logo" hint="Home" href="/projects"/>
+        <Button icon="heroicons/cube" hint="Projects" href="/projects"/>
+        <Button icon="heroicons/command-line" hint="Workflows" href="/workflows"/>
+        <Button icon="heroicons/server" hint="Runtimes" href="/runtimes"/>
+    </header>
+
+    <footer class="flex flex-col">
+        <Button icon="heroicons/bell" hint="Notifications" href="/notifications"/>
+        <Button icon="heroicons/user" hint="Preferences" href="/preferences"/>
+    </footer>
+</nav>

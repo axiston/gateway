@@ -1,23 +1,26 @@
 version: '3.8'
 
 services:
-  axiston-gateway:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: axiston
-    environment:
-      - DATABASE=postgresql://usr:pwd@localhost:5432/db
-    depends_on:
-      - axiston-postgres
-    ports:
-      - "8000:8000"
-    networks:
-      - axiston
+#  axiston-gateway:
+#    container_name: gateway
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    environment:
+#      - DATABASE=postgresql://usr:pwd@localhost:5432/db
+#    depends_on:
+#      - axiston-database
+#    ports:
+#      - "8000:8000"
+#    networks:
+#      - axiston
 
-  axiston-postgres:
-    image: postgres:latest
-    container_name: postgres_db
+  # https://hub.docker.com/u/axiston
+  axiston-database:
+    container_name: database
+    build:
+      context: ./postgres/
+      dockerfile: ./Dockerfile
     environment:
       POSTGRES_USER: usr
       POSTGRES_PASSWORD: pwd
@@ -25,12 +28,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     networks:
       - axiston
 
 volumes:
-  postgres_data:
+  pgdata:
 
 networks:
   axiston:

@@ -1,30 +1,12 @@
-mod output_edge;
-mod output_node;
+//! Serializable datatypes (server to client).
+//!
 
-use std::fmt;
+mod hook_registry;
+mod report_bundle;
+mod response_graph;
+mod task_registry;
 
-use derive_more::From;
-use petgraph::{Direction, Graph};
-
-pub use crate::outputs::output_edge::OutputEdge;
-pub use crate::outputs::output_node::OutputNode;
-
-// TODO: Id of the next node?
-
-pub struct OutputGraph {
-    inner: Graph<OutputNode, OutputEdge>,
-}
-
-impl OutputGraph {
-    pub fn is_manual_trigger_enabled(&self) -> bool {
-        todo!()
-    }
-
-    // pub fn run_from_node
-}
-
-impl fmt::Debug for OutputGraph {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        todo!()
-    }
-}
+pub use crate::outputs::hook_registry::{HookRegistry, HookRegistryChunk};
+pub use crate::outputs::report_bundle::{ReportBundle, ReportError};
+pub use crate::outputs::response_graph::{OutputEdge, OutputGraph, OutputGraphDelta, OutputNode};
+pub use crate::outputs::task_registry::{TaskRegistry, TaskRegistryChunk};

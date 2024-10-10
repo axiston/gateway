@@ -23,22 +23,27 @@ default = []
 # - Enables HTTPS support with the axum-server crate.
 # - Spawns a server that redirects incoming HTTP requests.
 support-https = ["dep:axum-server"]
-# - Builds the whiteboard app into the app directory.
+# - Builds the graph editor app into the app directory.
 # - Enables service that serves files from app directory.
 support-files = []
 
 [dependencies]
-axiston-core = { workspace = true }
+axiston-server = { workspace = true }
 
 clap = { version = "4.5", features = ["derive"] }
-tokio = { version = "1.40", features = ["macros", "rt-multi-thread", "signal"] }
+tokio = { version = "1.41", features = ["macros", "rt-multi-thread", "signal"] }
 anyhow = { version = "1.0", features = ["backtrace"] }
+
 serde = { version = "1.0", features = ["derive"] }
+serde_with = { version = "3.11", features = [] }
+serde_toml = { package = "toml", version = "0.8", features = [] }
+serde_json = { version = "1.0", features = [] }
+countio = { version = "0.2", features = [] }
 
 tracing = { version = "0.1", features = [] }
 tracing-subscriber = { version = "0.3", features = ["env-filter", "time"] }
-tracing-opentelemetry = { version = "0.25", features = [] }
-opentelemetry = { version = "0.24", features = [] }
+tracing-opentelemetry = { version = "0.27.0", features = [] }
+opentelemetry = { version = "0.26.0", features = [] }
 
 axum = { version = "0.7", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.7", optional = true, features = ["tls-rustls"] }
@@ -48,4 +53,4 @@ tower = { version = "0.4", features = ["full"] }
 tower-http = { version = "0.5", features = ["full"] }
 
 [dev-dependencies]
-axum-test = { version = "15.7", features = [] }
+axum-test = { version = "16.3.0", features = [] }

@@ -32,6 +32,9 @@ typing/
 output/
 build/
 
+# Generated
+/crates/database/entities/
+
 # Binaries
 *.exe
 *.exe~

@@ -3,6 +3,8 @@
 use std::path::PathBuf;
 
 fn main() -> anyhow::Result<()> {
+    // TODO: Download runtime.proto file.
+
     let builder = tonic_build::configure()
         .build_transport(true)
         .build_client(true)
