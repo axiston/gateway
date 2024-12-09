@@ -1,0 +1,44 @@
+---
+import {
+	DEFAULT_DESCRIPTION,
+	DEFAULT_TITLE,
+	BUILD_VERSION,
+} from "@/const.config.ts";
+import "@/styles/index.css";
+import "@/styles/fonts.css";
+
+export interface Props {
+	title?: string;
+	description?: string;
+	version?: string;
+}
+
+let {
+	title = "Home",
+	description = DEFAULT_DESCRIPTION,
+	version = BUILD_VERSION,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const pageTitle = `${title} | ${DEFAULT_TITLE}. ${DEFAULT_DESCRIPTION}`;
+---
+<html lang="en">
+<head>
+    <!-- Global Metadata -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <meta name="generator" content={Astro.generator}/>
+    <meta name="gateway" content={version}/>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical}/>
+
+    <!-- Primary Meta Tags -->
+    <title>{pageTitle}</title>
+    <meta name="title" content={pageTitle}/>
+    <meta name="description" content={description}/>
+</head>
+<body>
+    <slot/>
+</body>

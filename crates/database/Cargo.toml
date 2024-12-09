@@ -1,0 +1,41 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "axiston-db-connect"
+version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+readme = "./README.md"
+
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+documentation = { workspace = true }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+axiston-db-generate = { workspace = true }
+diesel = { version = "2.2", features = ["time", "uuid", "ipnet-address"] }
+diesel-async = { version = "0.5", features = ["postgres", "pool", "deadpool"] }
+
+deadpool = { workspace = true }
+futures = { workspace = true }
+tracing = { workspace = true }
+derive_more = { workspace = true }
+thiserror = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+ipnet = { workspace = true }
+time = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
