@@ -3,8 +3,6 @@ use std::net::SocketAddr;
 use axum::extract::connect_info::Connected;
 use axum::serve::IncomingStream;
 
-// TODO: Move into ./server folder
-
 /// Produces information about the connection.
 #[derive(Debug, Clone)]
 #[must_use]
@@ -32,8 +30,8 @@ mod test {
     use axum::routing::{any, Router};
     use axum_test::TestServer;
 
+    use crate::extract::AppConnectInfo;
     use crate::handler::Result;
-    use crate::service::AppConnectInfo;
 
     async fn handler(ConnectInfo(_): ConnectInfo<AppConnectInfo>) -> Result<()> {
         Ok(())

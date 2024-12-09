@@ -5,8 +5,9 @@
 #[must_use = "configs do nothing unless you use them"]
 pub struct AppConfig {
     /// TODO: Store database conn string as a URL.
-    pub database_conn: String,
-    pub multiple_gateways: bool,
+    pub database: String,
+    /// Enables multiple gateway instances.
+    pub multiple: bool,
 }
 
 impl AppConfig {
@@ -34,7 +35,8 @@ impl Default for AppConfig {
 #[derive(Debug, Default, Clone)]
 #[must_use = "configs do nothing unless you use them"]
 pub struct AppBuilder {
-    pub database_conn: Option<String>,
+    pub database: Option<String>,
+    pub multiple: Option<bool>,
 }
 
 impl AppBuilder {
@@ -46,10 +48,10 @@ impl AppBuilder {
 
     /// Returns a new [`AppConfig`].
     pub fn build(self) -> AppConfig {
-        let default_database = "postgresql://usr:pwd@localhost:5432/db".to_owned();
+        let default_database = "postgresql://usr:pwd@localhost:5432/db";
         AppConfig {
-            database_conn: self.database_conn.unwrap_or(default_database),
-            multiple_gateways: false,
+            database: self.database.unwrap_or(default_database.to_owned()),
+            multiple: self.multiple.unwrap_or_default(),
         }
     }
 }

@@ -31,7 +31,7 @@ pub async fn run_supported_server(
     server_config: ServerConfig,
     app_router: Router,
 ) -> anyhow::Result<()> {
-    let timeout = Duration::from_secs(60);
+    let timeout = Duration::from_secs(server_config.shutdown);
     let fut = shutdown_signal(timeout);
 
     #[cfg(not(feature = "support-https"))]

@@ -3,10 +3,13 @@ use std::fmt;
 use std::sync::{Arc, Mutex};
 
 use deadpool::managed::{Manager, Metrics, Pool, RecycleResult};
-
+use deadpool::Runtime;
 use crate::runtime::connection_metadata::RuntimeMetadata;
 use crate::runtime::ConnectionInstance;
-use crate::Error;
+
+#[derive(Debug)]
+pub struct Error {}
+
 
 /// [`ConnectionInstance`] connection manager.
 #[derive(Default)]
@@ -29,7 +32,8 @@ impl RuntimeManager {
 
     /// Returns a pool using the connection manager.
     pub fn pool(self) -> Pool<RuntimeManager> {
-        Pool::builder(self).build().unwrap()
+        let pool = Pool::builder(self).runtime(Runtime::Tokio1).build();
+        pool.expect("should not require runtime")
     }
 }
 
@@ -55,10 +59,10 @@ impl fmt::Debug for RuntimeManager {
 #[cfg(test)]
 mod test {
     use crate::runtime::RuntimeManager;
-    use crate::Result;
+    use crate::RuntimeResult;
 
     #[test]
-    fn build_from_address() -> Result<()> {
+    fn build_from_address() -> RuntimeResult<()> {
         let _ = RuntimeManager::new();
         Ok(())
     }

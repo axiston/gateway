@@ -62,8 +62,8 @@ where
             return Ok(auth_state.clone());
         };
 
-        let app_database = AppDatabase::from_ref(state);
         let auth_token = AuthToken::from_request_parts(parts, state).await?;
+        let app_database = AppDatabase::from_ref(state);
 
         #[derive(Debug, Clone, Copy)]
         pub enum AuthReason {
@@ -85,13 +85,13 @@ where
     }
 }
 
-///
+/// TODO.
 #[must_use]
 #[derive(Debug, Clone, Copy)]
 pub enum AuthRole {
     /// The [`AuthToken`] belongs to a regular user.
     Unprivileged,
-    /// The [`AuthToken`] belongs to a gateway admin.
+    /// The [`AuthToken`] belongs to an admin.
     Privileged,
 }
 

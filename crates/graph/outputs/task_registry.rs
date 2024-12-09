@@ -25,14 +25,14 @@ impl TaskRegistry {
         TaskRegistryChunk::new([].into_iter())
     }
 
-    fn find_by_tags(&self, tags: Vec<&str>) -> TaskRegistryChunk {
+    fn find_by_tags(&self, tags: &str) -> TaskRegistryChunk {
         TaskRegistryChunk::new([].into_iter())
     }
 
-    pub fn find(&self) -> TaskRegistryChunk {
+    pub fn find(&self, query: &str) -> TaskRegistryChunk {
         let mut chunk = TaskRegistryChunk::default();
-        chunk.merge(self.find_by_name());
-        chunk.merge(self.find_by_tags());
+        chunk.merge(self.find_by_name(query));
+        chunk.merge(self.find_by_tags(query));
         chunk
     }
 }

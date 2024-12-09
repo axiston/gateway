@@ -1,4 +1,4 @@
-use axiston_database::AppDatabase;
+use axiston_database_connect::Database;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::middleware::from_fn_with_state;
@@ -41,7 +41,7 @@ struct RetrieveAccountResponse {
 async fn retrieve_account(
     authentication: AuthState,
     params: Option<Path<AccountPathParams>>,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
 ) -> Result<(StatusCode, Json<RetrieveAccountResponse>)> {
     let account_id = params
         .map(|params| params.account)
@@ -103,7 +103,7 @@ struct UpdateAccountResponse {
 async fn update_account(
     authentication: AuthState,
     params: Option<Path<AccountPathParams>>,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Json(request): Json<UpdateAccountRequest>,
 ) -> Result<(StatusCode, Json<UpdateAccountResponse>)> {
     let account_id = params
@@ -150,7 +150,7 @@ struct DeleteAccountResponse {
 async fn delete_account(
     authentication: AuthState,
     params: Option<Path<AccountPathParams>>,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
 ) -> Result<(StatusCode, Json<DeleteAccountResponse>)> {
     let account_id = params
         .map(|params| params.account)

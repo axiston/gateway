@@ -4,6 +4,7 @@
 
 pub use crate::extract::auth_state::{AuthRole, AuthState};
 pub use crate::extract::auth_token::AuthToken;
+pub use crate::extract::conn_info::AppConnectInfo;
 pub use crate::extract::reject_json::Json;
 pub use crate::extract::reject_path::Path;
 pub use crate::extract::validate::Validated;
@@ -17,6 +18,7 @@ pub type ValidatedPath<T> = Validated<Path<T>>;
 
 mod auth_state;
 mod auth_token;
+mod conn_info;
 mod reject_json;
 mod reject_path;
 mod validate;

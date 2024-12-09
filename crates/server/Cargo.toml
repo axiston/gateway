@@ -33,22 +33,21 @@ support-oauth2 = []
 support-invite = []
 
 [dependencies]
-axiston-database = { workspace = true }
+axiston-db-connect = { workspace = true }
+axiston-db-migrate = { workspace = true }
+
 axiston-graph = { workspace = true }
 axiston-runtime = { workspace = true }
 
 tokio = { version = "1.41", features = ["macros", "rt-multi-thread", "signal"] }
 futures = { version = "0.3", features = [] }
 anyhow = { version = "1.0", features = ["backtrace"] }
+tracing = { version = "0.1", features = [] }
+
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = [] }
 derive_more = { version = "1.0", features = ["full"] }
 ts-rs = { version = "10.0", features = [] }
-
-tracing = { version = "0.1", features = [] }
-tracing-subscriber = { version = "0.3", features = ["env-filter", "time"] }
-tracing-opentelemetry = { version = "0.27.0", features = [] }
-opentelemetry = { version = "0.26.0", features = [] }
 
 axum = { version = "0.7", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.7", optional = true, features = ["tls-rustls"] }
@@ -62,11 +61,11 @@ validator = { version = "0.18", features = [] }
 rand = { version = "0.8.5", features = [] }
 argon2 = { version = "0.5.3", features = ["std"] }
 
-# bytes = { version = "1.8", features = ["serde"] }
+bytes = { version = "1.8", features = ["serde"] }
 time = { version = "0.3", features = ["serde"] }
 uuid = { version = "1.11", features = ["serde", "v4"] }
 base64 = { version = "0.22", features = [] }
-# ecow = { version = "0.2.3", features = ["serde"] }
+ecow = { version = "0.2.3", features = ["serde"] }
 
 [dev-dependencies]
 axum-test = { version = "16.3", features = [] }

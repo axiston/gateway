@@ -23,3 +23,5 @@ pub mod worker;
 /// [`ReportBundle`]: crate::outputs::ReportBundle
 /// [`Result`]: std::result::Result
 pub type Result<T, E = outputs::ReportBundle> = std::result::Result<T, E>;
+
+// TODO: check https://github.com/rbatis/fast_pool

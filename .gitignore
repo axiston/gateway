@@ -33,7 +33,7 @@ output/
 build/
 
 # Generated
-/crates/database/entities/
+crates/runtime/protobuf/
 
 # Binaries
 *.exe

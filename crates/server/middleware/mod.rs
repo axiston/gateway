@@ -7,9 +7,8 @@ use axum::Router;
 use tower::ServiceBuilder;
 
 pub use crate::middleware::auth_guards::{authentication_guard, authorization_guard};
-use crate::middleware::error_handling::setup_error_handling;
-pub use crate::middleware::observability::initialize_tracing;
-use crate::middleware::observability::setup_observability;
+use crate::middleware::error_handling::RouterHandlingExt;
+use crate::middleware::observability::RouterTracingExt;
 
 mod auth_guards;
 mod error_handling;
@@ -23,14 +22,14 @@ impl<L> ServiceBuilderExt<L> for ServiceBuilder<L> {}
 
 /// Extension trait for `axum::`[`Router`] for layering middleware.
 pub trait RouterExt<S> {
-    /// Stacks [`HandleError`], [`CatchPanic`] and [`Timeout`] layers.
+    /// Layers [`HandleError`], [`CatchPanic`] and [`Timeout`] middlewares.
     ///
     /// [`HandleError`]: axum::error_handling::HandleErrorLayer
     /// [`CatchPanic`]: tower_http::catch_panic::CatchPanicLayer
     /// [`Timeout`]: tower::timeout::TimeoutLayer
     fn with_error_handling_layer(self, timeout: Duration) -> Self;
 
-    /// Stacks [`SetRequestId`], [`Trace`] and [`PropagateRequestId`] layers.
+    /// Layers [`SetRequestId`], [`Trace`] and [`PropagateRequestId`] middlewares.
     ///
     /// [`SetRequestId`]: tower_http::request_id::SetRequestIdLayer
     /// [`Trace`]: tower_http::trace::TraceLayer
@@ -44,11 +43,11 @@ where
 {
     #[inline]
     fn with_error_handling_layer(self, timeout: Duration) -> Self {
-        setup_error_handling(self, timeout)
+        self.with_inner_error_handling_layer(timeout)
     }
 
     #[inline]
     fn with_observability_layer(self) -> Self {
-        setup_observability(self)
+        self.with_inner_observability_layer()
     }
 }

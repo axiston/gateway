@@ -10,6 +10,7 @@ use crate::worker::graph_compiler::{CompileGraph, DefaultGraphCompiler};
 use crate::worker::graph_executor::{DefaultGraphExecutor, ExecuteGraph};
 use crate::worker::internal_graph::{ProcessEdge, ProcessGraph, ProcessNode};
 
+/// TODO.
 #[derive(Debug)]
 pub struct GraphWorker<C = DefaultGraphCompiler, E = DefaultGraphExecutor> {
     graph_compiler: C,

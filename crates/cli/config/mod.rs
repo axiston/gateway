@@ -1,9 +1,8 @@
-//! TODO.
+//! Loads and parses configuration files.
 //!
 
 mod load_json;
 mod load_toml;
-mod load_yaml;
 
 use std::ffi::OsStr;
 use std::path::PathBuf;
@@ -14,7 +13,6 @@ use serde::Deserialize;
 
 use crate::config::load_json::load_json;
 use crate::config::load_toml::load_toml;
-use crate::config::load_yaml::load_yaml;
 use crate::server::ServerConfig;
 
 /// Command-line arguments.
@@ -68,7 +66,6 @@ impl Args {
             Cli::File { path } => match path.extension() {
                 Some(ext) if OsStr::new("toml") == ext => load_toml(path),
                 Some(ext) if OsStr::new("json") == ext => load_json(path),
-                Some(ext) if OsStr::new("yaml") == ext => load_yaml(path),
                 _ => Err(anyhow::anyhow!("should specify a supported file extension")),
             },
         }
@@ -77,8 +74,8 @@ impl Args {
     /// Returns a new [`AppConfig`].
     pub fn build_app_config(&self) -> AppConfig {
         AppConfig {
-            database_conn: self.database.clone(),
-            multiple_gateways: self.multiple,
+            database: self.database.clone(),
+            multiple: self.multiple,
         }
     }
 

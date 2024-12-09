@@ -1,21 +1,20 @@
-use crate::runtime::RuntimeManager;
-use crate::RuntimeClient;
+use crate::client::RuntimeConn;
 
-/// [`RuntimeClient`] builder.
-#[derive(Debug, Default)]
-pub struct ClientBuilder {
-    inner: RuntimeManager,
-}
+/// [`RuntimeConn`] builder.
+#[derive(Debug, Default, Clone)]
+#[must_use = "builders do nothing unless you use them"]
+pub struct RuntimeConnBuilder {}
 
-impl ClientBuilder {
-    /// Returns a new [`ClientBuilder`].
+impl RuntimeConnBuilder {
+    /// Returns a new [`RuntimeConnBuilder`].
     #[inline]
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Builds a new [`RuntimeClient`].
-    pub fn build(self) -> RuntimeClient {
-        RuntimeClient::new(self.inner.pool())
+    /// Builds a new [`RuntimeConn`].
+    pub fn build(self) -> RuntimeConn {
+        // TODO: Build endpoint here.
+        todo!()
     }
 }

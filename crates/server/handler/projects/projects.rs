@@ -1,4 +1,4 @@
-use axiston_database::AppDatabase;
+use axiston_database_connect::Database;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::routing::{delete, get, patch, post, Router};
@@ -39,7 +39,7 @@ struct CreateProjectResponse {
 #[tracing::instrument]
 async fn create_new_project(
     authentication: AuthState,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Json(request): Json<CreateProjectRequest>,
 ) -> Result<(StatusCode, Json<CreateProjectResponse>)> {
     let response = CreateProjectResponse {
@@ -106,7 +106,7 @@ struct ListProjectsResponse {
 #[tracing::instrument]
 async fn list_all_projects(
     authentication: AuthState,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Path(params): Path<AccountPathParams>,
     request: Option<Json<ListProjectsRequest>>,
 ) -> Result<(StatusCode, Json<ListProjectsResponse>)> {
@@ -134,7 +134,7 @@ struct RetrieveProjectResponse {
 #[tracing::instrument]
 async fn retrieve_project_details(
     authentication: AuthState,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Path(params): Path<ProjectPathParams>,
 ) -> Result<(StatusCode, Json<RetrieveProjectResponse>)> {
     let response = RetrieveProjectResponse {
@@ -174,7 +174,7 @@ struct ModifyProjectResponse {
 #[tracing::instrument]
 async fn modify_project(
     authentication: AuthState,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Path(params): Path<ProjectPathParams>,
     Json(request): Json<ModifyProjectRequest>,
 ) -> Result<(StatusCode, Json<ModifyProjectResponse>)> {
@@ -198,7 +198,7 @@ struct DeleteProjectResponse {
 #[tracing::instrument]
 async fn delete_project(
     authentication: AuthState,
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Path(params): Path<ProjectPathParams>,
 ) -> Result<(StatusCode, Json<DeleteProjectResponse>)> {
     let response = DeleteProjectResponse {

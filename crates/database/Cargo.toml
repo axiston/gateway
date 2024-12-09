@@ -1,7 +1,7 @@
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [package]
-name = "axiston-database"
+name = "axiston-db-connect"
 version = { workspace = true }
 edition = { workspace = true }
 license = { workspace = true }
@@ -21,26 +21,21 @@ rustdoc-args = ["--cfg", "docsrs"]
 path = "lib.rs"
 
 [dependencies]
-sea-orm = { workspace = true }
-sea-orm-migration = { workspace = true }
+axiston-db-generate = { workspace = true }
+diesel = { version = "2.2", features = ["time", "uuid", "ipnet-address"] }
+diesel-async = { version = "0.5", features = ["postgres", "pool", "deadpool"] }
 
+deadpool = { workspace = true }
 futures = { workspace = true }
 tracing = { workspace = true }
-async-trait = { workspace = true }
-thiserror = { workspace = true }
 derive_more = { workspace = true }
+thiserror = { workspace = true }
 
 serde = { workspace = true }
-serde_with = { workspace = true }
 serde_json = { workspace = true }
 uuid = { workspace = true }
+ipnet = { workspace = true }
 time = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
-
-[build-dependencies]
-sea-orm-cli = { workspace = true }
-tokio = { workspace = true }
-tracing = { workspace = true }
-anyhow = { workspace = true }

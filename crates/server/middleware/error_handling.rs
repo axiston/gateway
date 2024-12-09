@@ -40,14 +40,22 @@ pub fn catch_panic(err: Panic) -> Response {
     ErrorKind::InternalServerError.into_response()
 }
 
-pub fn setup_error_handling<S>(router: Router<S>, timeout: Duration) -> Router<S>
+/// Extension trait for `axum::`[`Router`] for error handling.
+pub trait RouterHandlingExt<S> {
+    /// Stacks [`HandleError`], [`CatchPanic`] and [`Timeout`] layers.
+    fn with_inner_error_handling_layer(self, timeout: Duration) -> Self;
+}
+
+impl<S> RouterHandlingExt<S> for Router<S>
 where
     S: Clone + Send + Sync + 'static,
 {
-    let middlewares = ServiceBuilder::new()
-        .layer(HandleErrorLayer::new(handle_error))
-        .layer(CatchPanicLayer::custom(catch_panic))
-        .layer(TimeoutLayer::new(timeout));
+    fn with_inner_error_handling_layer(self, timeout: Duration) -> Self {
+        let middlewares = ServiceBuilder::new()
+            .layer(HandleErrorLayer::new(handle_error))
+            .layer(CatchPanicLayer::custom(catch_panic))
+            .layer(TimeoutLayer::new(timeout));
 
-    router.layer(middlewares)
+        self.layer(middlewares)
+    }
 }

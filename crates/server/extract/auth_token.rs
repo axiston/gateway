@@ -5,6 +5,7 @@ use axum_extra::headers::authorization::{Authorization, Bearer};
 use axum_extra::typed_header::{TypedHeader, TypedHeaderRejectionReason};
 use base64::Engine;
 use serde::{Deserialize, Serialize};
+use time::ext::NumericalDuration;
 use time::{Duration, OffsetDateTime};
 use uuid::Uuid;
 
@@ -34,7 +35,9 @@ use crate::handler::{Error, ErrorKind, Result};
 /// use axiston_server::extract::AuthToken;
 ///
 ///  async fn write_auth_token() -> AuthToken {
-///     AuthToken::new(Uuid::new_v4(), Uuid::new_v4(), 7.days())
+///     AuthToken::new(Uuid::new_v4(), Uuid::new_v4())
+///         .with_region_id("0A")
+///         .with_expires_in(7.days())
 /// }
 /// ```
 ///
@@ -42,27 +45,44 @@ use crate::handler::{Error, ErrorKind, Result};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AuthToken {
-    // TODO: Attach region identifier.
-    // TODO: Encode iat/eat as timestamps.
     #[serde(rename = "pid")]
     pub account_id: Uuid,
     #[serde(rename = "seq")]
     pub token_seq: Uuid,
+    #[serde(rename = "rid")]
+    pub region_id: Option<String>,
     #[serde(rename = "iat")]
+    #[serde(with = "time::serde::rfc3339")]
     pub issued_at: OffsetDateTime,
     #[serde(rename = "eat")]
+    #[serde(with = "time::serde::rfc3339")]
     pub expired_at: OffsetDateTime,
 }
 
 impl AuthToken {
     /// Returns a new [`AuthToken`].
-    pub fn new(account_id: Uuid, token_seq: Uuid, expires_in: Duration) -> Self {
+    pub fn new(account_id: Uuid, token_seq: Uuid) -> Self {
         Self {
             account_id,
             token_seq,
+            region_id: None,
             issued_at: OffsetDateTime::now_utc(),
-            expired_at: OffsetDateTime::now_utc() + expires_in.abs(),
+            expired_at: OffsetDateTime::now_utc() + 7.days(),
         }
+    }
+
+    /// Overwrites the region identifier.
+    #[inline]
+    pub fn with_region_id(mut self, region_id: &str) -> Self {
+        self.region_id = Some(region_id.to_owned());
+        self
+    }
+
+    /// Overwrites the auth token valid duration.
+    #[inline]
+    pub fn with_expires_in(mut self, expires_in: Duration) -> Self {
+        self.expired_at = self.issued_at + expires_in.abs();
+        self
     }
 
     /// Returns the duration the token is valid for.

@@ -1,7 +1,7 @@
 use std::future::Future;
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axiston_server::service::AppConnectInfo;
+use axiston_server::extract::AppConnectInfo;
 use axum::Router;
 use axum_server::tls_rustls::RustlsConfig;
 use axum_server::Handle;

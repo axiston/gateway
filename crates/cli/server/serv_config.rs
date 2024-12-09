@@ -7,11 +7,12 @@ use std::path::PathBuf;
 #[must_use = "configs do nothing unless you use them"]
 #[derive(Debug, Clone)]
 pub struct ServerConfig {
-    /// Used by the primary server.
+    /// Port exposed by the primary server.
     pub port: u16,
+    // Shutdown duration in seconds.
+    pub shutdown: u64,
 
-    // TODO: Shutdown duration.
-    /// Used by the secondary (`http` to `https` redirection) server.
+    /// Port exposed by the secondary (redirection) server.
     #[cfg(feature = "support-https")]
     #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
     pub redirect: u16,
@@ -53,6 +54,7 @@ impl Default for ServerConfig {
 #[derive(Debug, Default, Clone)]
 pub struct ServerBuilder {
     pub port: Option<u16>,
+    pub shutdown: Option<u64>,
 
     #[cfg(feature = "support-https")]
     #[cfg_attr(docsrs, doc(cfg(feature = "support-https")))]
@@ -78,8 +80,9 @@ impl ServerBuilder {
     pub fn build(self) -> ServerConfig {
         ServerConfig {
             port: self.port.unwrap_or(3000),
+            shutdown: self.shutdown.unwrap_or(10),
             #[cfg(feature = "support-https")]
-            redirect: self.port.unwrap_or(3001),
+            redirect: self.redirect.unwrap_or(3001),
             #[cfg(feature = "support-https")]
             cert: self.cert.unwrap_or(PathBuf::from("./cert.pem")),
             #[cfg(feature = "support-https")]

@@ -1,4 +1,4 @@
-use axiston_database::AppDatabase;
+use axiston_database_connect::Database;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::middleware::from_fn_with_state;
@@ -9,7 +9,7 @@ use ts_rs::TS;
 use crate::extract::{AuthToken, Json};
 use crate::handler::Result;
 use crate::middleware::authentication_guard;
-use crate::service::{AppHashing, AppState};
+use crate::service::{AppState, Argon2Hasher};
 
 /// See [`sign_up`].
 #[must_use]
@@ -33,8 +33,8 @@ struct SignUpResponse {
 
 #[tracing::instrument]
 async fn sign_up(
-    State(database): State<AppDatabase>,
-    State(hashing): State<AppHashing>,
+    State(database): State<Database>,
+    State(hashing): State<Argon2Hasher>,
     Json(request): Json<SignUpRequest>,
 ) -> Result<(StatusCode, Json<SignUpResponse>)> {
     todo!()
@@ -53,8 +53,8 @@ struct SignInRequest {
 /// Can be used as a sign-in method.
 #[tracing::instrument]
 async fn sign_in(
-    State(database): State<AppDatabase>,
-    State(hashing): State<AppHashing>,
+    State(database): State<Database>,
+    State(hashing): State<Argon2Hasher>,
     Json(request): Json<SignInRequest>,
 ) -> Result<(StatusCode, AuthToken)> {
     todo!()
@@ -82,7 +82,7 @@ struct SignOutResponse {
 /// Can be used as a sign-out.
 #[tracing::instrument]
 async fn sign_out(
-    State(database): State<AppDatabase>,
+    State(database): State<Database>,
     Json(request): Json<SignOutRequest>,
 ) -> Result<(StatusCode, Json<SignOutResponse>)> {
     todo!()

@@ -1,50 +1,69 @@
 #![forbid(unsafe_code)]
+#![allow(async_fn_in_trait)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("./README.md")]
 
 //! ### Examples
 //!
 //! ```rust,no_run
-//! use axiston_database::{Result, AppDatabase};
+//! use axiston_db_connect::{DatabaseResult, Database};
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<()> {
+//! async fn main() -> DatabaseResult<()> {
 //!     let addr = "postgresql://usr:pwd@localhost:5432/db";
-//!     let conn = AppDatabase::connect_single_instance(addr).await;
+//!     let _ = Database::new_single_gateway(addr);
 //!     Ok(())
 //! }
 //! ```
 
-mod connect;
-mod migrate;
+use deadpool::managed::TimeoutType;
+use diesel::result::{ConnectionError, Error};
+use diesel_async::pooled_connection::deadpool::PoolError;
+use diesel_async::pooled_connection::PoolError as PoolError2;
 
-use derive_more::From;
-use sea_orm::DbErr as SeaError;
+pub use crate::config::{Database, DatabaseConfig};
 
-pub use crate::connect::{AppDatabase, ConnectOptionsExt, ConstraintViolation};
-pub use crate::migrate::AppDatabaseExt;
+mod config;
+mod query;
 
 /// Unrecoverable failure of the [`Database`].
 ///
 /// Includes all error types that may occur.
-///
-/// [`Database`]: database::Database
-#[derive(Debug, From, thiserror::Error)]
-#[error("underlying sql driver failure: {inner}")]
+#[derive(Debug, thiserror::Error)]
 #[must_use = "errors do nothing unless you use them"]
-pub struct Error {
-    inner: SeaError,
+pub enum DatabaseError {
+    /// [`deadpool::managed::PoolError::Timeout`].
+    #[error("timeout error")]
+    Timeout(TimeoutType),
+    /// [`diesel_async::pooled_connection::PoolError::ConnectionError`]
+    #[error("connection error: {0}")]
+    Connection(ConnectionError),
+    /// [`diesel_async::pooled_connection::PoolError::QueryError`]
+    #[error("query error: {0}")]
+    Query(Error),
 }
 
-impl Error {
-    /// Returns a new [`Error`].
-    #[inline]
-    pub fn new(inner: SeaError) -> Self {
-        Self { inner }
+impl From<PoolError> for DatabaseError {
+    fn from(value: PoolError) -> Self {
+        match value {
+            PoolError::Timeout(timeout_type) => Self::Timeout(timeout_type),
+            PoolError::Backend(PoolError2::ConnectionError(connection_error)) => {
+                Self::Connection(connection_error)
+            }
+            PoolError::Backend(PoolError2::QueryError(query_error)) => Self::Query(query_error),
+            PoolError::PostCreateHook(_) => unreachable!(),
+            PoolError::NoRuntimeSpecified => unreachable!(),
+            PoolError::Closed => unreachable!(),
+        }
     }
 }
 
-/// Specialized [`Result`] alias for the [`Error`] type.
-///
-/// [`Result`]: std::result::Result
-pub type Result<T, E = Error> = std::result::Result<T, E>;
+impl From<Error> for DatabaseError {
+    #[inline]
+    fn from(value: Error) -> Self {
+        Self::Query(value)
+    }
+}
+
+/// Specialized [`Result`] alias for the [`DatabaseError`] type.
+pub type DatabaseResult<T, E = DatabaseError> = Result<T, E>;
