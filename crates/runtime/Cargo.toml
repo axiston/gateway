@@ -1,7 +1,7 @@
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [package]
-name = "axiston-runtime"
+name = "axiston-rt-connect"
 version = { workspace = true }
 edition = { workspace = true }
 license = { workspace = true }
@@ -21,6 +21,8 @@ rustdoc-args = ["--cfg", "docsrs"]
 path = "lib.rs"
 
 [dependencies]
+axiston-rt-schema = { workspace = true }
+
 thiserror = { workspace = true }
 derive_more = { workspace = true }
 tracing = { workspace = true }
@@ -28,8 +30,6 @@ serde = { workspace = true }
 
 tonic = { version = "0.12", features = [] }
 prost = { version = "0.13", features = [] }
-tonic-types = { version = "0.12", features = [] }
-prost-types = { version = "0.13", features = [] }
 deadpool = { version = "0.12", features = ["managed", "rt_tokio_1"] }
 
 tower = { workspace = true }
@@ -37,8 +37,3 @@ tower-http = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
-
-[build-dependencies]
-anyhow = { workspace = true }
-tonic-build = { version = "0.12", features = [] }
-prost-build = { version = "0.13", features = [] }

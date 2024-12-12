@@ -5,50 +5,65 @@
 //! ### Examples
 //!
 //! ```rust
-//! use axiston_runtime::{Runtime, RuntimeConfig, RuntimeResult};
+//! use axiston_rt_connect::{Runtime, Result, RuntimeEndpoint};
+//!
 //!
 //! #[tokio::main]
-//! async fn main() -> RuntimeResult<()> {
-//!     let config = RuntimeConfig::new();
-//!     let runtime = Runtime::new((), config);
+//! async fn main() -> Result<()> {
+//!     let runtime = Runtime::default();
+//!     let endpoint = RuntimeEndpoint::try_new("")?;
+//!     runtime.register_endpoint(endpoint)?;
 //!     let _conn = runtime.get_connection().await?;
 //!     Ok(())
 //! }
 //! ```
 
+mod instance;
+mod manager;
+
 use deadpool::managed::PoolError;
 use derive_more::From;
 
-use crate::client::{RuntimeConn, RuntimeConnBuilder, RuntimeConnError};
-pub use crate::config::{Runtime, RuntimeConfig, RuntimeObject};
+pub use crate::instance::{Runtime, RuntimeConfig};
+use crate::manager::RuntimeError;
+pub use crate::manager::RuntimeEndpoint;
 
-mod client;
-mod config;
-
-/// Unrecoverable failure of the [`RuntimeConn`].
+/// Unrecoverable failure of the [`Runtime`].
 ///
 /// Includes all error types that may occur.
+#[non_exhaustive]
 #[derive(Debug, From, thiserror::Error)]
 #[must_use = "errors do nothing unless you use them"]
-pub enum RuntimeError {
+pub enum Error {
+    /// Timeout happened.
+    #[error("timeout happened")]
+    Timout(deadpool::managed::TimeoutType),
     /// Transport failure (from the client or server).
     #[error("transport failure: {0}")]
     Transport(tonic::transport::Error),
 }
 
-impl From<PoolError<RuntimeConnError>> for RuntimeError {
-    fn from(value: PoolError<RuntimeConnError>) -> Self {
-        todo!()
+impl From<RuntimeError> for Error {
+    fn from(runtime_connection_error: RuntimeError) -> Self {
+        match runtime_connection_error {
+            RuntimeError::Transport(transport_failure) => Self::Transport(transport_failure),
+        }
     }
 }
 
-/// Specialized [`Result`] alias for the [`RuntimeError`] type.
-pub type RuntimeResult<T, E = RuntimeError> = Result<T, E>;
+impl From<PoolError<RuntimeError>> for Error {
+    fn from(value: PoolError<RuntimeError>) -> Self {
+        match value {
+            PoolError::Timeout(timeout_type) => Self::Timout(timeout_type),
+            PoolError::Backend(backend_error) => backend_error.into(),
+            PoolError::Closed => unreachable!(),
+            PoolError::NoRuntimeSpecified => unreachable!(),
+            PoolError::PostCreateHook(_) => unreachable!(),
+        }
+    }
+}
 
-// TODO: Trait to implement adding new runtimes and picking the right one for the user:
-// Use the first available one on local.
-// Use the dedicated one on remote.
-
-// TODO: best practices or whatever
-// https://github.com/weiznich/diesel_async/blob/main/src/pooled_connection/deadpool.rs
-// https://github.com/bikeshedder/deadpool/blob/master/diesel/src/manager.rs
+/// Specialized [`Result`] alias for the [`Error`] type.
+///
+/// [`Result`]: std::result::Result
+pub type Result<T, E = Error> = std::result::Result<T, E>;

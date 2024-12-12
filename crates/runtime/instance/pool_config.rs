@@ -48,11 +48,11 @@ impl RuntimeConfig {
 
 #[cfg(test)]
 mod test {
-    use crate::{RuntimeConfig, RuntimeResult};
+    use crate::{Result, RuntimeConfig};
 
     #[test]
-    fn default_settings() -> RuntimeResult<()> {
-        let _ = RuntimeConfig::new();
+    fn build_default_settings() -> Result<()> {
+        let _config = RuntimeConfig::new();
         Ok(())
     }
 }
