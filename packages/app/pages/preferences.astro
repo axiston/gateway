@@ -1,0 +1,24 @@
+---
+import Main from "@/layouts/Main.astro";
+// import Input from "@/components/ui/Input.svelte";
+---
+<Main title="Preferences">
+    <div class="my-4 mx-4">
+        <span class="text-4xl text-gray-300">
+            Preferences
+        </span>
+
+        <div>
+            <div class="flex flex-col">
+                <label for="name" class="font-medium">
+                    Your name
+                </label>
+                <input id="name" type="text" aria-describedby="nameDescribe" class="border border-gray-200"/>
+                <p id="nameDescribe" class="text-sm text-gray-400">
+                    Use 3-20 characters. Letters, numbers, and underscores only.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</Main>

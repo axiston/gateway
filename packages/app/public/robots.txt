@@ -1,0 +1,9 @@
+# Notice: The use of robots or other automated means to access Axiston
+# without the express permission of Axiston is strictly prohibited.
+# See https://www.axiston.com/legal/terms-of-service/
+
+User-Agent: *
+Disallow: *
+
+# Notice: If you would like to crawl Axiston, please
+# email contact@axiston.com to apply for white listing.
