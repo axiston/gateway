@@ -11,8 +11,8 @@ use crate::{Error, Result};
 #[derive(Debug, Clone)]
 pub struct RuntimeEndpoint {
     pub(crate) endpoint: Endpoint,
-    pub(crate) connection_limit: Option<u32>,
-    pub(crate) connection_now: u32,
+    pub(crate) limit: Option<u32>,
+    pub(crate) current: u32,
 }
 
 impl RuntimeEndpoint {
@@ -20,8 +20,8 @@ impl RuntimeEndpoint {
     pub fn new(endpoint: Endpoint) -> Self {
         Self {
             endpoint,
-            connection_limit: None,
-            connection_now: 0,
+            limit: None,
+            current: 0,
         }
     }
 
@@ -35,7 +35,7 @@ impl RuntimeEndpoint {
     /// Overrides the value of [`RuntimeEndpoint`]`::connection_limit`.
     #[inline]
     pub fn connection_limit(mut self, limit: Option<u32>) -> Self {
-        self.connection_limit = limit;
+        self.limit = limit;
         self
     }
 
@@ -51,7 +51,8 @@ impl From<Endpoint> for RuntimeEndpoint {
     fn from(value: Endpoint) -> Self {
         Self {
             endpoint: value,
-            connection_limit: None,
+            limit: None,
+            current: 0,
         }
     }
 }

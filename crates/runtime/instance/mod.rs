@@ -2,7 +2,7 @@ use std::fmt;
 
 use deadpool::managed::{Hook, Object, Pool};
 use derive_more::{Deref, DerefMut, From};
-use tonic::transport::Uri;
+use uuid::Uuid;
 
 use crate::instance::custom_hooks::{post_create, post_recycle, pre_recycle};
 pub use crate::instance::pool_config::RuntimeConfig;
@@ -22,16 +22,17 @@ pub struct Runtime {
 /// Hides connection pool manager types.
 #[derive(Debug, From, Deref, DerefMut)]
 pub struct RuntimeObject {
-    inner: Object<RuntimeManager>,
+    inner_object: Object<RuntimeManager>,
 }
 
 impl Runtime {
     /// Returns a new [`Runtime`].
     pub fn new(config: RuntimeConfig) -> Self {
-        let manager_config = RuntimeManagerConfig::new();
+        let manager_config =
+            RuntimeManagerConfig::new().with_recycling_method(config.recycling_method);
         let manager = RuntimeManager::new(manager_config);
         let pool = Pool::builder(manager)
-            .max_size(config.max_conn.unwrap_or(8))
+            .max_size(config.max_conn.unwrap_or(64))
             .create_timeout(config.create_timeout)
             .wait_timeout(config.wait_timeout)
             .recycle_timeout(config.recycle_timeout)
@@ -53,10 +54,10 @@ impl Runtime {
     }
 
     /// Removes the runtime endpoint from the pool.
-    pub fn unregister_endpoint<E: Into<Uri>>(&self, rt: E) -> Result<()> {
+    pub fn unregister_endpoint<E: Into<Uuid>>(&self, rt: E) -> Result<()> {
         self.inner
             .manager()
-            .unregister_endpoint(rt.into())
+            .unregister_endpoint(&rt.into())
             .map_err(Into::into)
     }
 

@@ -4,27 +4,30 @@ use axiston_rt_schema::instance::instance_client::InstanceClient;
 use axiston_rt_schema::registry::registry_client::RegistryClient;
 use derive_more::From;
 use tonic::transport::{Channel, Endpoint};
+use uuid::Uuid;
 
 /// TODO.
 pub struct RuntimeClient {
-    instance_client: InstanceClient<Channel>,
-    registry_client: RegistryClient<Channel>,
+    pub(crate) endpoint_id: Uuid,
+    pub(crate) instance_client: InstanceClient<Channel>,
+    pub(crate) registry_client: RegistryClient<Channel>,
 }
 
 impl RuntimeClient {
     /// Returns a new [`RuntimeClient`].
     #[inline]
-    pub fn new(channel: Channel) -> Self {
+    pub fn new(id: Uuid, inner_channel: Channel) -> Self {
         Self {
-            instance_client: InstanceClient::new(channel.clone()),
-            registry_client: RegistryClient::new(channel),
+            endpoint_id: id,
+            instance_client: InstanceClient::new(inner_channel.clone()),
+            registry_client: RegistryClient::new(inner_channel),
         }
     }
 
     /// Returns a new [`RuntimeClient`].
-    pub async fn connect(endpoint: Endpoint) -> RuntimeResult<Self> {
+    pub async fn connect(id: Uuid, endpoint: Endpoint) -> RuntimeResult<Self> {
         let channel = endpoint.connect().await?;
-        Ok(Self::new(channel))
+        Ok(Self::new(id, channel))
     }
 
     /// Returns the reference to the underlying (generated) instance client.
@@ -55,6 +58,12 @@ impl fmt::Debug for RuntimeClient {
 #[derive(Debug, From, thiserror::Error)]
 #[must_use = "errors do nothing unless you use them"]
 pub enum RuntimeError {
+    /// All endpoints have reached the limit.
+    #[error("all endpoints have reached the limit")]
+    EndpointsLimit,
+    /// Connection pool has no endpoints.
+    #[error("connection pool has no endpoints")]
+    NoEndpoints,
     /// Transport failure (from the client or server).
     #[error("transport failure: {0}")]
     Transport(tonic::transport::Error),

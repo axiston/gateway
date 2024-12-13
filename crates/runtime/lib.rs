@@ -20,13 +20,14 @@
 
 mod instance;
 mod manager;
+mod middleware;
 
 use deadpool::managed::PoolError;
 use derive_more::From;
 
 pub use crate::instance::{Runtime, RuntimeConfig};
-use crate::manager::RuntimeError;
 pub use crate::manager::RuntimeEndpoint;
+use crate::manager::RuntimeError;
 
 /// Unrecoverable failure of the [`Runtime`].
 ///
@@ -38,8 +39,15 @@ pub enum Error {
     /// Timeout happened.
     #[error("timeout happened")]
     Timout(deadpool::managed::TimeoutType),
-    /// Transport failure (from the client or server).
-    #[error("transport failure: {0}")]
+
+    /// Runtime: All endpoints have reached the limit.
+    #[error("runtime: all endpoints have reached the limit")]
+    EndpointsLimit,
+    /// Runtime: Connection pool has no endpoints.
+    #[error("runtime: connection pool has no endpoints")]
+    NoEndpoints,
+    /// Runtime: Transport failure (from the client or server).
+    #[error("runtime: transport failure: {0}")]
     Transport(tonic::transport::Error),
 }
 
@@ -47,6 +55,8 @@ impl From<RuntimeError> for Error {
     fn from(runtime_connection_error: RuntimeError) -> Self {
         match runtime_connection_error {
             RuntimeError::Transport(transport_failure) => Self::Transport(transport_failure),
+            RuntimeError::EndpointsLimit => Self::EndpointsLimit,
+            RuntimeError::NoEndpoints => Self::NoEndpoints,
         }
     }
 }

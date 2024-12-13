@@ -24,13 +24,16 @@ impl RuntimeManagerConfig {
     }
 }
 
-/// TODO.
+/// Possible methods of how a connection is recycled.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub enum RecyclingMethod {
-    /// TODO.
+    /// Only check for open event bus when recycling existing connections
+    /// Unless you have special needs this is a safe choice.
     #[default]
     Fast,
-    /// TODO.
+    /// In addition to checking for open event bus a test query is executed.
+    ///
+    /// This is slower, but guarantees that the database connection is ready to be used.
     Verified,
 }
 
