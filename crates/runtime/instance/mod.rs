@@ -25,6 +25,22 @@ pub struct RuntimeObject {
     inner_object: Object<RuntimeManager>,
 }
 
+impl RuntimeObject {
+    /// Removes this runtime endpoint from the pool.
+    pub async fn unregister_self(&self) -> Result<()> {
+        let Some(runtime_pool) = Object::pool(&self.inner_object) else {
+            return Ok(());
+        };
+
+        let runtime_manager = runtime_pool.manager();
+        runtime_manager
+            .unregister_endpoint(self.as_endpoint_id())
+            .await?;
+
+        Ok(())
+    }
+}
+
 impl Runtime {
     /// Returns a new [`Runtime`].
     pub fn new(config: RuntimeConfig) -> Self {
@@ -46,18 +62,20 @@ impl Runtime {
     }
 
     /// Adds the runtime endpoint into the pool.
-    pub fn register_endpoint<E: Into<RuntimeEndpoint>>(&self, rt: E) -> Result<()> {
+    pub async fn register_endpoint<E: Into<RuntimeEndpoint>>(&self, rt: E) -> Result<()> {
         self.inner
             .manager()
             .register_endpoint(rt.into())
+            .await
             .map_err(Into::into)
     }
 
     /// Removes the runtime endpoint from the pool.
-    pub fn unregister_endpoint<E: Into<Uuid>>(&self, rt: E) -> Result<()> {
+    pub async fn unregister_endpoint<E: Into<Uuid>>(&self, rt: E) -> Result<()> {
         self.inner
             .manager()
             .unregister_endpoint(&rt.into())
+            .await
             .map_err(Into::into)
     }
 

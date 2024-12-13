@@ -7,9 +7,9 @@ mod runtime_endpoint;
 
 use std::collections::HashMap;
 use std::fmt;
-use std::sync::Mutex;
 
 use deadpool::managed::{Manager, Metrics, RecycleResult};
+use tokio::sync::Mutex;
 use tonic::transport::Channel;
 use uuid::Uuid;
 
@@ -40,8 +40,8 @@ impl RuntimeManager {
     }
 
     /// Adds the runtime endpoint into the pool.
-    pub(crate) fn register_endpoint(&self, endpoint: RuntimeEndpoint) -> RuntimeResult<()> {
-        let mut manager = self.inner.lock().expect("should not be held");
+    pub(crate) async fn register_endpoint(&self, endpoint: RuntimeEndpoint) -> RuntimeResult<()> {
+        let mut manager = self.inner.lock().await;
         let mut endpoint_id = Uuid::new_v4();
         while manager.endpoints.contains_key(&endpoint_id) {
             endpoint_id = Uuid::new_v4();
@@ -52,17 +52,17 @@ impl RuntimeManager {
     }
 
     /// Removes the runtime endpoint from the pool.
-    pub(crate) fn unregister_endpoint(&self, endpoint_id: &Uuid) -> RuntimeResult<()> {
-        let mut manager = self.inner.lock().expect("should not be held");
-        // TODO: Maybe don't actually remove it, but use a *disable* flag instead.
+    pub(crate) async fn unregister_endpoint(&self, endpoint_id: &Uuid) -> RuntimeResult<()> {
+        let mut manager = self.inner.lock().await;
+        // TODO: Don't remove it, but use a *disable* flag.
         let _ = manager.endpoints.remove(endpoint_id);
         Ok(())
     }
 
-    /// - Returns the next least used channel.
+    /// - Returns the least used channel.
     /// - Increases the counter of current connections by 1.
     async fn next_channel(&self) -> RuntimeResult<(Uuid, Channel)> {
-        let mut manager = self.inner.lock().expect("should not be held");
+        let mut manager = self.inner.lock().await;
         if manager.endpoints.is_empty() {
             return Err(RuntimeError::NoEndpoints);
         }
@@ -92,17 +92,18 @@ impl RuntimeManager {
     }
 
     /// Reduces the counter of current connections by 1.
-    fn drop_channel(&self, endpoint_id: &Uuid) {
-        let mut manager = self.inner.lock().expect("should not be held");
+    async fn drop_channel(&self, endpoint_id: &Uuid) {
+        let mut manager = self.inner.lock().await;
         if let Some((endpoint, _)) = manager.endpoints.get_mut(endpoint_id) {
             endpoint.current -= 1;
         }
     }
 
-    async fn test_connection(&self, runtime_client: &mut RuntimeClient) -> RuntimeResult<()> {
-        let mut manager = self.inner.lock().expect("should not be held");
+    /// Recycles a dropped instance of runtime client.
+    async fn test_connection(&self, _runtime_client: &mut RuntimeClient) -> RuntimeResult<()> {
+        let manager = self.inner.lock().await;
 
-        // TODO.
+        // TODO: Recycle dropped connections.
         match manager.config.recycling_method {
             RecyclingMethod::Fast => {}
             RecyclingMethod::Verified => {}
@@ -138,7 +139,7 @@ impl Manager for RuntimeManager {
         conn: &mut Self::Type,
         _metrics: &Metrics,
     ) -> RecycleResult<Self::Error> {
-        self.drop_channel(&conn.endpoint_id);
+        self.drop_channel(&conn.endpoint_id).await;
         self.test_connection(conn).await?;
         Ok(())
     }

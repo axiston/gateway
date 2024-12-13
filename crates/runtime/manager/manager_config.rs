@@ -51,7 +51,7 @@ mod test {
     use crate::Result;
 
     #[test]
-    fn default_settings() -> Result<()> {
+    fn build_default_settings() -> Result<()> {
         let _ = RuntimeManagerConfig::new();
         Ok(())
     }

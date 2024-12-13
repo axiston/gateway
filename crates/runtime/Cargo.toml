@@ -23,18 +23,16 @@ path = "lib.rs"
 [dependencies]
 axiston-rt-schema = { workspace = true }
 
+tokio = { workspace = true }
+deadpool = { workspace = true }
 thiserror = { workspace = true }
-derive_more = { workspace = true }
 tracing = { workspace = true }
-serde = { workspace = true }
-uuid = { workspace = true }
 
-tonic = { version = "0.12", features = [] }
-prost = { version = "0.13", features = [] }
-deadpool = { version = "0.12", features = ["managed", "rt_tokio_1"] }
-
+tonic = { workspace = true }
+prost = { workspace = true }
 tower = { workspace = true }
 tower-http = { workspace = true }
 
-[dev-dependencies]
-tokio = { workspace = true }
+derive_more = { workspace = true }
+serde = { workspace = true }
+uuid = { workspace = true }

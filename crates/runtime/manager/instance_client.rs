@@ -6,7 +6,12 @@ use derive_more::From;
 use tonic::transport::{Channel, Endpoint};
 use uuid::Uuid;
 
-/// TODO.
+/// Represents a client for interacting with runtime services.
+///
+/// The `RuntimeClient` is responsible for managing communication with instance
+/// and registry services, identified by a unique endpoint ID. It wraps generated
+/// gRPC clients for both instance and registry operations, providing a cohesive
+/// interface for runtime service interactions.
 pub struct RuntimeClient {
     pub(crate) endpoint_id: Uuid,
     pub(crate) instance_client: InstanceClient<Channel>,
@@ -16,11 +21,11 @@ pub struct RuntimeClient {
 impl RuntimeClient {
     /// Returns a new [`RuntimeClient`].
     #[inline]
-    pub fn new(id: Uuid, inner_channel: Channel) -> Self {
+    pub fn new(id: Uuid, channel: Channel) -> Self {
         Self {
             endpoint_id: id,
-            instance_client: InstanceClient::new(inner_channel.clone()),
-            registry_client: RegistryClient::new(inner_channel),
+            instance_client: InstanceClient::new(channel.clone()),
+            registry_client: RegistryClient::new(channel),
         }
     }
 
@@ -28,6 +33,12 @@ impl RuntimeClient {
     pub async fn connect(id: Uuid, endpoint: Endpoint) -> RuntimeResult<Self> {
         let channel = endpoint.connect().await?;
         Ok(Self::new(id, channel))
+    }
+
+    /// Returns the reference to the underlying unique endpoint identifier.
+    #[inline]
+    pub fn as_endpoint_id(&self) -> &Uuid {
+        &self.endpoint_id
     }
 
     /// Returns the reference to the underlying (generated) instance client.

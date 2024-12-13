@@ -26,7 +26,7 @@ impl RuntimeEndpoint {
     }
 
     /// Returns a new [`RuntimeEndpoint`].
-    pub fn try_new<A: Into<Bytes>>(endpoint: A) -> Result<Self> {
+    pub fn from_bytes(endpoint: Bytes) -> Result<Self> {
         let endpoint = Endpoint::from_shared(endpoint)?;
         let endpoint = endpoint.user_agent(USER_AGENT.as_str())?;
         Ok(Self::new(endpoint))
@@ -57,15 +57,25 @@ impl From<Endpoint> for RuntimeEndpoint {
     }
 }
 
-impl TryFrom<Bytes> for RuntimeEndpoint {
+impl TryFrom<&str> for RuntimeEndpoint {
     type Error = Error;
 
-    fn try_from(value: Bytes) -> Result<Self, Self::Error> {
-        Self::try_new(value)
+    #[inline]
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        Self::from_bytes(Bytes::copy_from_slice(value.as_bytes()))
     }
 }
 
-// TODO: Replace with `static USER_AGENT: String` once const `format!` is stable.
+impl TryFrom<Bytes> for RuntimeEndpoint {
+    type Error = Error;
+
+    #[inline]
+    fn try_from(value: Bytes) -> Result<Self, Self::Error> {
+        Self::from_bytes(value)
+    }
+}
+
+// TODO: Replace with `static USER_AGENT: String`.
 static USER_AGENT: LazyLock<String, fn() -> String> = LazyLock::new(format_user_agent);
 fn format_user_agent() -> String {
     format!(
@@ -77,13 +87,22 @@ fn format_user_agent() -> String {
 
 #[cfg(test)]
 mod test {
+    use tonic::transport::Endpoint;
+
     use crate::manager::RuntimeEndpoint;
     use crate::Result;
 
     #[test]
-    fn instance() -> Result<()> {
-        let addr = "https://example.com/";
-        let _endpoint = RuntimeEndpoint::try_new(addr)?;
+    fn endpoint_from_bytes() -> Result<()> {
+        let addr = "https://example.com/".into();
+        let _endpoint = RuntimeEndpoint::from_bytes(addr)?;
+        Ok(())
+    }
+
+    #[test]
+    fn endpoint_from_inner() -> Result<()> {
+        let endpoint = Endpoint::from_static("https://example.com/");
+        let _endpoint = RuntimeEndpoint::new(endpoint);
         Ok(())
     }
 }

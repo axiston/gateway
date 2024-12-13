@@ -11,9 +11,12 @@
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
 //!     let runtime = Runtime::default();
-//!     let endpoint = RuntimeEndpoint::try_new("")?;
-//!     runtime.register_endpoint(endpoint)?;
+//!
+//!     let addr = "https://example.com/";
+//!     let endpoint = RuntimeEndpoint::from_bytes(addr.into())?;
+//!     runtime.register_endpoint(endpoint).await?;
 //!     let _conn = runtime.get_connection().await?;
+//!
 //!     Ok(())
 //! }
 //! ```
@@ -25,7 +28,7 @@ mod middleware;
 use deadpool::managed::PoolError;
 use derive_more::From;
 
-pub use crate::instance::{Runtime, RuntimeConfig};
+pub use crate::instance::{Runtime, RuntimeConfig, RuntimeObject};
 pub use crate::manager::RuntimeEndpoint;
 use crate::manager::RuntimeError;
 
@@ -39,7 +42,6 @@ pub enum Error {
     /// Timeout happened.
     #[error("timeout happened")]
     Timout(deadpool::managed::TimeoutType),
-
     /// Runtime: All endpoints have reached the limit.
     #[error("runtime: all endpoints have reached the limit")]
     EndpointsLimit,
